@@ -8,7 +8,7 @@ MyTcpServer::MyTcpServer(QObject *parent) :
 {
     server = new QTcpServer(this);
 
-    // whenever a user connects, it will emit signal
+    // èª°ã‹ãŒconnectã—ã¦ããŸã‚‰ã€signalã‚’å‡ºã—ã¦newConnection()ã‚’Call
     connect(server, SIGNAL(newConnection()),
             this, SLOT(newConnection()));
 
@@ -24,43 +24,37 @@ MyTcpServer::MyTcpServer(QObject *parent) :
 
 void MyTcpServer::newConnection()
 {
-    // need to grab the socket
+    // socketã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆ
     socket = server->nextPendingConnection();
 
 	qDebug() << " connect";
 
-	// Ø’f‚µ‚½‚Ìˆ—‚ğ’è‹`
+	// åˆ‡æ–­ã—ãŸæ™‚ã®å‡¦ç†ã‚’å®šç¾©
 	connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
 
-	// óM‚µ‚½‚Ìˆ—‚ğ’è‹`
+	// å—ä¿¡ã—ãŸæ™‚ã®å‡¦ç†ã‚’å®šç¾©
 	connect(socket, SIGNAL(readyRead()), this, SLOT(readData()));
-	// ƒGƒ‰[ˆ—‚Ì’è‹`
+	// ã‚¨ãƒ©ãƒ¼å‡¦ç†ã®å®šç¾©
 	connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(socketError(QAbstractSocket::SocketError)));
-	// Ø’f‚µ‚½‚Æ‚«‚Ìˆ—‚Æ‚µ‚ÄSLOTŠÖ”‚ğİ’è‚·‚éB
+	// åˆ‡æ–­ã—ãŸã¨ãã®å‡¦ç†ã¨ã—ã¦SLOTé–¢æ•°ã‚’è¨­å®šã™ã‚‹ã€‚
 	connect(socket, SIGNAL(disconnected()), this, SLOT(deleteLater()));
 
-	// ƒNƒ‰ƒCƒAƒ“ƒg‚ÌIPƒAƒhƒŒƒX‚ğæ“¾
+	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã®IPã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’å–å¾—
 	QString ippaddr = socket->localAddress().toString();
 
-	// ‘—Mƒf[ƒ^‚ğstream‚Æ‚µ‚Ä’è‹`
+	// é€ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’streamã¨ã—ã¦å®šç¾©
 	QDataStream out(socket);
 	out.setVersion(QDataStream::Qt_5_0);
 
 	out << "Hello client\r\n";
 	
-    //socket->write("Hello client\r\n");
-    //socket->flush();
-
-    //socket->waitForBytesWritten(3000);
-
-    //socket->close();
 }
 
 void MyTcpServer::readData()
 {
 	QString s;
 
-	// óMƒf[ƒ^‚ğvstream‚Æ‚µ‚Ä’è‹`
+	// å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’ã€streamã¨ã—ã¦å®šç¾©
 	//QDataStream in(socket);
 	//in.setVersion(QDataStream::Qt_5_11);
 
